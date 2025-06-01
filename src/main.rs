@@ -1,37 +1,33 @@
 use clap::{Arg, ArgMatches, Command, value_parser};
 
+mod notes;
+
 fn add(matches: &ArgMatches) {
-    if let Some(content) = matches.get_one::<String>("content") {
-        println!("Editing note with content: {}", content);
-        // todo
-    } else {
-        // todo throw error instead?
-        eprintln!("Note content is missing.");
-    }
+    let content = matches
+        .get_one::<String>("content")
+        .expect("`content` should always be present as it is required");
+
+    notes::add();
 }
 
 fn list(matches: &ArgMatches) {
-    // todo list
+    notes::list();
 }
 
 fn edit(matches: &ArgMatches) {
-    if let Some(id) = matches.get_one::<u8>("id") {
-        println!("Editing note with ID: {}", id);
-        // todo
-    } else {
-        // todo throw error instead?
-        eprintln!("Note ID is missing or invalid.");
-    }
+    let id = matches
+        .get_one::<u8>("id")
+        .expect("`id` should always be present as it is required");
+
+    notes::edit();
 }
 
 fn delete(matches: &ArgMatches) {
-    if let Some(id) = matches.get_one::<u8>("id") {
-        println!("Deleting note with ID: {}", id);
-        // todo
-    } else {
-        // todo throw error instead?
-        eprintln!("Note ID is missing or invalid.");
-    }
+    let id = matches
+        .get_one::<u8>("id")
+        .expect("`id` should always be present as it is required");
+
+    notes::delete();
 }
 
 fn main() {
