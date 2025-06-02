@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use crate::storage;
 use colored::Colorize;
 
@@ -30,10 +28,6 @@ impl Notes {
             let index_part = format!("{:>2}:", idx + 1);
             println!("{} {}", index_part.bright_black().bold(), note)
         }
-    }
-
-    pub fn edit(&mut self, idx: usize) {
-        todo!();
     }
 
     pub fn delete(&mut self, idx: usize) {

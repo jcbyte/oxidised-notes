@@ -17,15 +17,6 @@ fn list() {
     notes.list();
 }
 
-fn edit(matches: &ArgMatches) {
-    let idx = matches
-        .get_one::<usize>("idx")
-        .expect("`idx` should always be present as it is required");
-
-    let mut notes = notes::Notes::new();
-    notes.edit(*idx);
-}
-
 fn delete(matches: &ArgMatches) {
     let idx = matches
         .get_one::<usize>("idx")
@@ -47,14 +38,6 @@ fn main() {
         )
         .subcommand(Command::new("list").about("List notes"))
         .subcommand(
-            Command::new("edit").about("Edit a note").arg(
-                Arg::new("idx")
-                    .required(true)
-                    .help("Note index")
-                    .value_parser(value_parser!(usize)),
-            ),
-        )
-        .subcommand(
             Command::new("delete").about("Delete a note").arg(
                 Arg::new("idx")
                     .required(true)
@@ -67,7 +50,6 @@ fn main() {
     match matches.subcommand() {
         Some(("add", sub_matches)) => add(sub_matches),
         Some(("list", _sub_matches)) => list(),
-        Some(("edit", sub_matches)) => edit(sub_matches),
         Some(("delete", sub_matches)) => delete(sub_matches),
         _ => unreachable!(),
     }
