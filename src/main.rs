@@ -30,7 +30,10 @@ fn delete(matches: &ArgMatches) {
         .expect("`idx` should always be present as it is required");
 
     let mut notes = notes::Notes::new(get_storage_filename());
-    notes.delete(idx - 1);
+
+    if let Err(e) = notes.delete(idx - 1) {
+        eprintln!("{}", e);
+    }
 }
 
 fn main() {

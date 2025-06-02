@@ -34,10 +34,18 @@ impl Notes {
         }
     }
 
-    pub fn delete(&mut self, idx: usize) {
-        // todo show error when not in bounds
+    pub fn delete(&mut self, idx: usize) -> Result<(), String> {
+        if idx <= 0 || idx >= self.notes.len() {
+            return Err(format!(
+                "Note {} does not exist!",
+                idx.to_string().bright_red().bold()
+            ));
+        }
+
         self.notes.remove(idx);
         self.dirty = true;
+
+        return Ok(());
     }
 }
 
