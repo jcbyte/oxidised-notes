@@ -1,6 +1,7 @@
 use crate::storage;
 use colored::Colorize;
 
+// todo should be relative to the exe
 const FILENAME: &str = "notes.json";
 
 pub(crate) struct Notes {
@@ -11,7 +12,7 @@ pub(crate) struct Notes {
 impl Notes {
     // todo should filename be passed into constructor?
     pub fn new() -> Self {
-        let notes = storage::load(FILENAME);
+        let notes = storage::load(FILENAME).unwrap(); // todo handle this safely
         Self {
             notes,
             dirty: false,
@@ -39,7 +40,7 @@ impl Notes {
 impl Drop for Notes {
     fn drop(&mut self) {
         if self.dirty {
-            storage::save(FILENAME, &self.notes);
+            storage::save(FILENAME, &self.notes); // todo handle this safely
         }
     }
 }

@@ -23,7 +23,7 @@ fn delete(matches: &ArgMatches) {
         .expect("`idx` should always be present as it is required");
 
     let mut notes = notes::Notes::new();
-    notes.delete(*idx);
+    notes.delete(idx - 1);
 }
 
 fn main() {
