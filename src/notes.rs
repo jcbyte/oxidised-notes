@@ -2,14 +2,14 @@ use crate::storage;
 
 const FILENAME: &str = "notes.json";
 
-struct Notes {
+pub(crate) struct Notes {
     notes: Vec<String>,
     dirty: bool,
 }
 
 impl Notes {
     // todo should filename be passed into constructor?
-    fn new() -> Self {
+    pub fn new() -> Self {
         let notes = storage::load(FILENAME);
         Self {
             notes,
@@ -17,13 +17,24 @@ impl Notes {
         }
     }
 
-    fn add() {}
+    // todo cannot add more than 256
+    pub fn add(&mut self, content: &str) {
+        self.notes.push(content.to_string());
+        self.dirty = true;
+    }
 
-    fn list() {}
+    pub fn list() {
+        todo!();
+    }
 
-    fn edit() {}
+    pub fn edit() {
+        todo!();
+    }
 
-    fn delete() {}
+    pub fn delete(&mut self, idx: usize) {
+        self.notes.remove(idx);
+        self.dirty = true;
+    }
 }
 
 impl Drop for Notes {
