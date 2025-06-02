@@ -1,16 +1,15 @@
-use std::{fs::File, io::Write};
+use std::fs;
+
+// todo add safety to these
 
 pub(crate) fn load(filename: &str) -> Vec<String> {
-    // todo load and return
-    todo!()
+    let data = fs::read_to_string(filename).unwrap();
+    let notes: Vec<String> = serde_json::from_str(&data).unwrap();
+
+    return notes;
 }
 
 pub(crate) fn save(filename: &str, notes: &Vec<String>) {
-    // todo is unwrap here unsafe
     let json = serde_json::to_string(notes).unwrap();
-
-    // todo is unwrap unsafe here too
-    let mut file = File::create(filename).unwrap();
-    // todo this could error
-    file.write_all(json.as_bytes());
+    fs::write(filename, json.as_bytes()).unwrap();
 }
