@@ -1,30 +1,29 @@
 use crate::storage;
 use colored::Colorize;
 
-// todo should be relative to the exe
-const FILENAME: &str = "notes.json";
-
 pub(crate) struct Notes {
     notes: Vec<String>,
+    filename: String,
     dirty: bool,
 }
 
 impl Notes {
-    // todo should filename be passed into constructor?
-    pub fn new() -> Self {
-        let notes = storage::load(FILENAME).unwrap(); // todo handle this safely
+    pub fn new(filename: String) -> Self {
+        let notes = storage::load(&filename).unwrap(); // todo handle this safely
         Self {
             notes,
+            filename,
             dirty: false,
         }
     }
 
-    pub fn add(&mut self, content: &str) {
-        self.notes.push(content.to_string());
+    pub fn add(&mut self, content: String) {
+        self.notes.push(content);
         self.dirty = true;
     }
 
     pub fn list(&self) {
+        // todo show nothing message when nothing
         for (idx, note) in self.notes.iter().enumerate() {
             let index_part = format!("{:>2}:", idx + 1);
             println!("{} {}", index_part.bright_black().bold(), note)
@@ -32,6 +31,7 @@ impl Notes {
     }
 
     pub fn delete(&mut self, idx: usize) {
+        // todo show error when not in bounds
         self.notes.remove(idx);
         self.dirty = true;
     }
@@ -40,7 +40,7 @@ impl Notes {
 impl Drop for Notes {
     fn drop(&mut self) {
         if self.dirty {
-            storage::save(FILENAME, &self.notes); // todo handle this safely
+            storage::save(&self.filename, &self.notes); // todo handle this safely
         }
     }
 }

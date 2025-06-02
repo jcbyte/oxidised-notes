@@ -3,14 +3,14 @@ use std::{fs, io};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum LoadError {
+pub enum StorageError {
     #[error("I/O error: {0}")]
     Io(#[from] io::Error),
     #[error("JSON error: {0}")]
     Json(#[from] serde_json::Error),
 }
 
-pub(crate) fn load(filename: &str) -> Result<Vec<String>, LoadError> {
+pub(crate) fn load(filename: &String) -> Result<Vec<String>, StorageError> {
     if !fs::exists(filename)? {
         return Ok(vec![]);
     }
@@ -21,7 +21,7 @@ pub(crate) fn load(filename: &str) -> Result<Vec<String>, LoadError> {
     return Ok(notes);
 }
 
-pub(crate) fn save(filename: &str, notes: &Vec<String>) -> Result<(), LoadError> {
+pub(crate) fn save(filename: &String, notes: &Vec<String>) -> Result<(), StorageError> {
     let json = serde_json::to_string(notes)?;
     fs::write(filename, json.as_bytes())?;
 

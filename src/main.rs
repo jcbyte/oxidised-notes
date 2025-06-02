@@ -1,19 +1,26 @@
 use clap::{Arg, ArgMatches, Command, value_parser};
-
+use std::env;
 mod notes;
 mod storage;
+
+fn get_storage_filename() -> String {
+    let mut path = env::current_exe().unwrap().parent().unwrap().to_path_buf(); // todo make this safe
+    path.push("notes.json");
+    return path.to_str().unwrap().to_string();
+}
 
 fn add(matches: &ArgMatches) {
     let content = matches
         .get_one::<String>("content")
-        .expect("`content` should always be present as it is required");
+        .expect("`content` should always be present as it is required")
+        .clone();
 
-    let mut notes = notes::Notes::new();
+    let mut notes = notes::Notes::new(get_storage_filename());
     notes.add(content)
 }
 
 fn list() {
-    let notes = notes::Notes::new();
+    let notes = notes::Notes::new(get_storage_filename());
     notes.list();
 }
 
@@ -22,7 +29,7 @@ fn delete(matches: &ArgMatches) {
         .get_one::<usize>("idx")
         .expect("`idx` should always be present as it is required");
 
-    let mut notes = notes::Notes::new();
+    let mut notes = notes::Notes::new(get_storage_filename());
     notes.delete(idx - 1);
 }
 
