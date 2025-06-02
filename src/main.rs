@@ -12,8 +12,9 @@ fn add(matches: &ArgMatches) {
     notes.add(content)
 }
 
-fn list(matches: &ArgMatches) {
-    todo!();
+fn list() {
+    let notes = notes::Notes::new();
+    notes.list();
 }
 
 fn edit(matches: &ArgMatches) {
@@ -21,7 +22,8 @@ fn edit(matches: &ArgMatches) {
         .get_one::<usize>("idx")
         .expect("`idx` should always be present as it is required");
 
-    todo!();
+    let mut notes = notes::Notes::new();
+    notes.edit(*idx);
 }
 
 fn delete(matches: &ArgMatches) {
@@ -64,7 +66,7 @@ fn main() {
     let matches = command.get_matches();
     match matches.subcommand() {
         Some(("add", sub_matches)) => add(sub_matches),
-        Some(("list", sub_matches)) => list(sub_matches),
+        Some(("list", _sub_matches)) => list(),
         Some(("edit", sub_matches)) => edit(sub_matches),
         Some(("delete", sub_matches)) => delete(sub_matches),
         _ => unreachable!(),
