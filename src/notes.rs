@@ -23,7 +23,11 @@ impl Notes {
     }
 
     pub fn list(&self) {
-        // todo show nothing message when nothing
+        if self.notes.is_empty() {
+            println!("{}", "No Notes Yet!".bright_black().bold());
+            return;
+        }
+
         for (idx, note) in self.notes.iter().enumerate() {
             let index_part = format!("{:>2}:", idx + 1);
             println!("{} {}", index_part.bright_black().bold(), note)
