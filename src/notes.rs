@@ -20,6 +20,15 @@ impl Notes {
         });
     }
 
+    pub fn save(&mut self) -> Result<(), Box<dyn Error>> {
+        if self.dirty {
+            storage::save(&self.filename, &self.notes)?;
+        }
+        self.dirty = false;
+
+        return Ok(());
+    }
+
     pub fn add(&mut self, content: String) {
         self.notes.push(content);
         self.dirty = true;
@@ -52,10 +61,11 @@ impl Notes {
     }
 }
 
+#[cfg(debug_assertions)]
 impl Drop for Notes {
     fn drop(&mut self) {
         if self.dirty {
-            storage::save(&self.filename, &self.notes); // todo handle this safely
+            panic!("Notes was dropped with unsaved changes!");
         }
     }
 }

@@ -17,6 +17,7 @@ fn add(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 
     let mut notes = notes::Notes::new(get_storage_filename())?;
     notes.add(content);
+    notes.save()?;
 
     return Ok(());
 }
@@ -35,6 +36,7 @@ fn delete(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 
     let mut notes = notes::Notes::new(get_storage_filename())?;
     notes.delete(idx - 1)?;
+    notes.save()?;
 
     return Ok(());
 }
