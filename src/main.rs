@@ -52,16 +52,28 @@ fn main() {
         .subcommand(
             Command::new("add")
                 .about("Add a note")
+                .alias("new")
+                .alias("a")
                 .arg(Arg::new("content").required(true).help("Note content")),
         )
-        .subcommand(Command::new("list").about("List notes"))
         .subcommand(
-            Command::new("delete").about("Delete a note").arg(
-                Arg::new("idx")
-                    .required(true)
-                    .help("Note index")
-                    .value_parser(value_parser!(usize)),
-            ),
+            Command::new("list")
+                .about("List notes")
+                .alias("ls")
+                .alias("l"),
+        )
+        .subcommand(
+            Command::new("delete")
+                .about("Delete a note")
+                .alias("remove")
+                .alias("rm")
+                .alias("d")
+                .arg(
+                    Arg::new("idx")
+                        .required(true)
+                        .help("Note index")
+                        .value_parser(value_parser!(usize)),
+                ),
         );
 
     let matches = command.get_matches();
