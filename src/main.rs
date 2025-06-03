@@ -1,5 +1,5 @@
 use clap::{Arg, ArgMatches, Command, value_parser};
-use std::env;
+use std::{env, error::Error};
 mod notes;
 mod storage;
 
@@ -9,31 +9,34 @@ fn get_storage_filename() -> String {
     return path.to_str().unwrap().to_string();
 }
 
-fn add(matches: &ArgMatches) {
+fn add(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let content = matches
         .get_one::<String>("content")
         .expect("`content` should always be present as it is required")
         .clone();
 
-    let mut notes = notes::Notes::new(get_storage_filename());
-    notes.add(content)
+    let mut notes = notes::Notes::new(get_storage_filename())?;
+    notes.add(content);
+
+    return Ok(());
 }
 
-fn list() {
-    let notes = notes::Notes::new(get_storage_filename());
+fn list() -> Result<(), Box<dyn Error>> {
+    let notes = notes::Notes::new(get_storage_filename())?;
     notes.list();
+
+    return Ok(());
 }
 
-fn delete(matches: &ArgMatches) {
+fn delete(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
     let idx = matches
         .get_one::<usize>("idx")
         .expect("`idx` should always be present as it is required");
 
-    let mut notes = notes::Notes::new(get_storage_filename());
+    let mut notes = notes::Notes::new(get_storage_filename())?;
+    notes.delete(idx - 1)?;
 
-    if let Err(e) = notes.delete(idx - 1) {
-        eprintln!("{}", e);
-    }
+    return Ok(());
 }
 
 fn main() {
@@ -57,10 +60,15 @@ fn main() {
         );
 
     let matches = command.get_matches();
-    match matches.subcommand() {
+    let result = match matches.subcommand() {
         Some(("add", sub_matches)) => add(sub_matches),
         Some(("list", _sub_matches)) => list(),
         Some(("delete", sub_matches)) => delete(sub_matches),
         _ => unreachable!(),
+    };
+
+    if let Err(e) = result {
+        eprintln!("Error: {}", e);
+        return;
     }
 }

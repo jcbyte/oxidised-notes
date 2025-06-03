@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use crate::storage;
 use colored::Colorize;
 
@@ -8,13 +10,14 @@ pub(crate) struct Notes {
 }
 
 impl Notes {
-    pub fn new(filename: String) -> Self {
-        let notes = storage::load(&filename).unwrap(); // todo handle this safely
-        Self {
+    pub fn new(filename: String) -> Result<Self, Box<dyn Error>> {
+        let notes = storage::load(&filename)?;
+
+        return Ok(Self {
             notes,
             filename,
             dirty: false,
-        }
+        });
     }
 
     pub fn add(&mut self, content: String) {
