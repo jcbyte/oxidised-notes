@@ -1,28 +1,28 @@
-use std::error::Error;
+use std::{error::Error, path::PathBuf};
 
 use crate::storage;
 use colored::Colorize;
 
 pub(crate) struct Notes {
     notes: Vec<String>,
-    filename: String,
+    path: PathBuf,
     dirty: bool,
 }
 
 impl Notes {
-    pub fn new(filename: String) -> Result<Self, Box<dyn Error>> {
-        let notes = storage::load(&filename)?;
+    pub fn new(path: PathBuf) -> Result<Self, Box<dyn Error>> {
+        let notes = storage::load(&path)?;
 
         return Ok(Self {
             notes,
-            filename,
+            path,
             dirty: false,
         });
     }
 
     pub fn save(&mut self) -> Result<(), Box<dyn Error>> {
         if self.dirty {
-            storage::save(&self.filename, &self.notes)?;
+            storage::save(&self.path, &self.notes)?;
         }
         self.dirty = false;
 
@@ -36,13 +36,13 @@ impl Notes {
 
     pub fn list(&self) {
         if self.notes.is_empty() {
-            println!("{}", "No Notes Yet!".bright_black().bold());
+            println!("{}", "No Notes Yet!");
             return;
         }
 
         for (idx, note) in self.notes.iter().enumerate() {
             let index_part = format!("{:>2}:", idx + 1);
-            println!("{} {}", index_part.bright_black().bold(), note)
+            println!("{} {}", index_part.bright_black(), note)
         }
     }
 
@@ -50,7 +50,7 @@ impl Notes {
         if idx <= 0 || idx >= self.notes.len() {
             return Err(format!(
                 "Note {} does not exist!",
-                idx.to_string().bright_red().bold()
+                (idx + 1).to_string().bold()
             ));
         }
 

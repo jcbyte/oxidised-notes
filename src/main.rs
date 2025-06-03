@@ -1,12 +1,15 @@
 use clap::{Arg, ArgMatches, Command, value_parser};
-use std::{env, error::Error};
+use colored::Colorize;
+use std::{env, error::Error, path::PathBuf};
 mod notes;
 mod storage;
 
-fn get_storage_filename() -> String {
-    let mut path = env::current_exe().unwrap().parent().unwrap().to_path_buf(); // todo make this safe
+fn get_storage_path() -> Result<PathBuf, Box<dyn Error>> {
+    let exe_path = env::current_exe()?;
+    let dir = exe_path.parent().ok_or("Failed to get content directory")?;
+    let mut path = PathBuf::from(dir);
     path.push("notes.json");
-    return path.to_str().unwrap().to_string();
+    return Ok(path);
 }
 
 fn add(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
@@ -15,7 +18,7 @@ fn add(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
         .expect("`content` should always be present as it is required")
         .clone();
 
-    let mut notes = notes::Notes::new(get_storage_filename())?;
+    let mut notes = notes::Notes::new(get_storage_path()?)?;
     notes.add(content);
     notes.save()?;
 
@@ -23,7 +26,7 @@ fn add(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 }
 
 fn list() -> Result<(), Box<dyn Error>> {
-    let notes = notes::Notes::new(get_storage_filename())?;
+    let notes = notes::Notes::new(get_storage_path()?)?;
     notes.list();
 
     return Ok(());
@@ -34,7 +37,7 @@ fn delete(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
         .get_one::<usize>("idx")
         .expect("`idx` should always be present as it is required");
 
-    let mut notes = notes::Notes::new(get_storage_filename())?;
+    let mut notes = notes::Notes::new(get_storage_path()?)?;
     notes.delete(idx - 1)?;
     notes.save()?;
 
@@ -70,7 +73,7 @@ fn main() {
     };
 
     if let Err(e) = result {
-        eprintln!("Error: {}", e);
+        eprintln!("{}: {}", "Error".bright_red(), e);
         return;
     }
 }
