@@ -38,7 +38,7 @@ fn delete(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
         .expect("`idx` should always be present as it is required");
 
     let mut notes = notes::Notes::new(get_storage_path()?)?;
-    notes.delete(idx - 1)?;
+    notes.delete(*idx)?;
     notes.save()?;
 
     return Ok(());

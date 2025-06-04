@@ -47,14 +47,11 @@ impl Notes {
     }
 
     pub fn delete(&mut self, idx: usize) -> Result<(), String> {
-        if idx <= 0 || idx >= self.notes.len() {
-            return Err(format!(
-                "Note {} does not exist!",
-                (idx + 1).to_string().bold()
-            ));
+        if idx <= 0 || idx > self.notes.len() {
+            return Err(format!("Note {} does not exist!", idx.to_string().bold()));
         }
 
-        self.notes.remove(idx);
+        self.notes.remove(idx - 1);
         self.dirty = true;
 
         return Ok(());
