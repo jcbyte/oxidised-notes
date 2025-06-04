@@ -45,29 +45,29 @@ fn delete(matches: &ArgMatches) -> Result<(), Box<dyn Error>> {
 }
 
 fn main() {
-    let command = Command::new("Oxidised")
-        .about("Lightweight, Rust-powered CLI tool for managing notes")
+    let command = Command::new("ox")
+        .about("Lightweight, Rust-powered CLI tool for managing notes.")
         .version("0.1.1")
         .arg_required_else_help(true)
         .subcommand(
             Command::new("add")
                 .about("Add a note")
-                .alias("new")
-                .alias("a")
+                .visible_alias("new")
+                .visible_alias("a")
                 .arg(Arg::new("content").required(true).help("Note content")),
         )
         .subcommand(
             Command::new("list")
                 .about("List notes")
-                .alias("ls")
-                .alias("l"),
+                .visible_alias("ls")
+                .visible_alias("l"),
         )
         .subcommand(
             Command::new("delete")
                 .about("Delete a note")
-                .alias("remove")
-                .alias("rm")
-                .alias("d")
+                .visible_alias("remove")
+                .visible_alias("rm")
+                .visible_alias("d")
                 .arg(
                     Arg::new("idx")
                         .required(true)
