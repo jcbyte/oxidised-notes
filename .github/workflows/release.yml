@@ -44,11 +44,15 @@ jobs:
 
       - name: Get file names
         run: |
-          echo "BINARY_FILE=ox${{ matrix.os == 'windows-latest' && '.exe' || '' }}" >> $GITHUB_ENV
-          echo "ZIP_NAME=oxidised-notes-${{ matrix.os }}" >> $GITHUB_ENV
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            echo "BINARY_FILE=ox.exe" >> $GITHUB_ENV
+          else
+            echo "BINARY_FILE=ox" >> $GITHUB_ENV
+          fi
+          echo "ZIP_NAME=oxidised-notes-${{ matrix.os }}.zip" >> $GITHUB_ENV
 
       - name: Zip the binary
-        run: zip -r ${{ env.ZIP_NAME }} target/release/${{ env.BINARY_FILE }}
+        run: zip ${{ env.ZIP_NAME }} target/release/${{ env.BINARY_FILE }}
 
       - name: Upload Executable to Release
         uses: actions/upload-release-asset@v1
